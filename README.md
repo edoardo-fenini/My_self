@@ -1,3 +1,1 @@
-# My_self
-
-Personal website of Edoardo Fenini.
+Presentation of myself
