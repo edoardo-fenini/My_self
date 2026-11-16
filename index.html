@@ -272,6 +272,42 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
 .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 30px;margin-top:clamp(60px,9vw,120px);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px));color:var(--ink-dim)}
 @media (max-width:640px){.c-grid{grid-template-columns:minmax(0,1fr)}}
 
+/* ───────── playground: particle morph ───────── */
+.forme{position:relative;height:100vh;height:100svh;min-height:620px;overflow:hidden;background:var(--ink);color:var(--fog)}
+.forme canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;cursor:grab}
+.forme canvas:active{cursor:grabbing}
+.forme-ui{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding-block:clamp(78px,9vw,110px) calc(clamp(20px,3.4vw,40px) + env(safe-area-inset-bottom,0px))}
+.forme-ui .wrap{width:100%}
+.forme-ui .eyebrow{color:var(--peri);margin-bottom:18px}
+.forme-ui .h2{font-size:clamp(2.1rem,5.4vw,4.8rem)}
+.forme-ui .h2 em{color:var(--peri)}
+.forme-cap{color:var(--salmon);min-height:2.6em;margin-bottom:12px;max-width:44ch}
+.forme-btns{display:flex;flex-wrap:wrap;gap:8px;pointer-events:auto}
+.forme-btns button{padding:9px 16px;border:1px solid var(--line-ink);border-radius:99px;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--fog);background:rgba(10,13,36,.55);transition:background .3s,color .3s,border-color .3s}
+.forme-btns button:hover{border-color:var(--peri)}
+.forme-btns button[aria-pressed="true"]{background:var(--fog);color:var(--ink);border-color:var(--fog)}
+.forme-how{margin-top:14px;color:var(--fog-dim)}
+
+/* ───────── ball pit ───────── */
+.pit{position:relative;height:clamp(300px,40vw,430px);margin-top:clamp(36px,5vw,64px);border:1px solid var(--line-salmon);border-radius:22px;overflow:hidden;background:var(--paper);cursor:pointer;user-select:none;-webkit-user-select:none}
+.pit-hint{position:absolute;left:18px;top:14px;color:var(--ultra);pointer-events:none}
+.ball{position:absolute;left:0;top:0;border-radius:50%;display:grid;place-items:center;text-align:center;font-family:var(--f-mono);font-size:.72rem;font-weight:500;letter-spacing:.02em;touch-action:none;cursor:grab;will-change:transform}
+.ball:active{cursor:grabbing}
+.ball.b0{background:var(--ink);color:var(--salmon)}
+.ball.b1{background:var(--ultra);color:#fff}
+.ball.b2{background:var(--salmon);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.ball.big{font-family:var(--f-display);font-style:italic;font-size:1.5rem;font-weight:600}
+
+/* ───────── aurora shader ───────── */
+#cerco{overflow:hidden}
+#cv-aurora{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+#cerco .wrap{position:relative}
+
+/* ───────── sparks ───────── */
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:95;pointer-events:none;mix-blend-mode:difference}
+.portrait{transition:transform .35s var(--ease);transform-style:preserve-3d}
+.stage{touch-action:pan-y}
+
 /* ───────── cursor ───────── */
 .cur{position:fixed;left:0;top:0;z-index:100;pointer-events:none;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;border:1.5px solid #fff;mix-blend-mode:difference;opacity:0;transition:width .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),background .3s,opacity .3s}
 .cur.on{opacity:1}
@@ -288,6 +324,7 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
 <body>
 <div class="progress" id="progress"></div>
 <div class="cur" id="cur" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
 
 <header class="nav">
   <a class="logo" href="#top" aria-label="Edoardo Fenini">E<span>/F</span></a>
@@ -361,6 +398,22 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
 
 <div class="band" aria-hidden="true"><div id="band"></div></div>
 
+<!-- ═════════ PLAYGROUND ═════════ -->
+<section class="forme" id="forme" aria-label="Playground">
+  <canvas id="cv-forme" aria-hidden="true"></canvas>
+  <div class="forme-ui">
+    <div class="wrap">
+      <p class="eyebrow mono">Playground</p>
+      <h2 class="h2" data-en="Touch. Drag. <em>Transform.</em>">Tocca. Trascina. <em>Trasforma.</em></h2>
+    </div>
+    <div class="wrap">
+      <p class="forme-cap mono" id="forme-cap" aria-live="polite"></p>
+      <div class="forme-btns" id="forme-btns"></div>
+      <p class="forme-how mono" id="forme-how"></p>
+    </div>
+  </div>
+</section>
+
 <!-- ═════════ JOURNEY ═════════ -->
 <section class="on-salmon pad" id="percorso">
   <div class="wrap">
@@ -428,10 +481,10 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
     <div class="nao-grid">
       <div class="stage rv" id="stage" role="button" tabindex="0" aria-label="Robot">
         <span class="tagc a mono">unit_01 · humanoid</span>
-        <span class="tagc b mono" data-en="click the robot">clicca il robot</span>
+        <span class="tagc b mono" data-en="click or drag the robot">clicca o trascina il robot</span>
         <svg viewBox="0 0 400 440" aria-hidden="true">
           <ellipse cx="200" cy="425" rx="110" ry="10" fill="#050718" opacity=".7"/>
-          <g id="bot">
+          <g id="botw"><g id="bot">
             <line x1="200" y1="62" x2="200" y2="30" stroke="#eef0ff" stroke-width="5" stroke-linecap="round"/>
             <circle cx="200" cy="24" r="10" fill="#ffd0b9"/>
             <rect x="74" y="118" width="26" height="62" rx="12" fill="#3a47ff"/>
@@ -450,7 +503,7 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
             <rect x="152" y="282" width="96" height="58" rx="14" fill="#0a0d24"/>
             <polyline id="pulse" points="162,312 180,312 190,296 204,328 216,304 224,312 238,312" fill="none" stroke="#ffd0b9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
             <circle cx="200" cy="366" r="8" fill="#3a47ff"/>
-          </g>
+          </g></g>
         </svg>
         <div class="bubble" id="bubble" aria-live="polite">Ciao! Io sono il robot.</div>
       </div>
@@ -472,6 +525,7 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
   <div class="wrap">
     <p class="eyebrow mono rv" data-en="Skills">Competenze</p>
     <h2 class="h2 rv" data-en="The toolbox, <em>both drawers.</em>">La cassetta degli attrezzi, <em>tutti e due i cassetti.</em></h2>
+    <div class="pit rv" id="pit"><span class="pit-hint mono" data-en="Grab them, throw them. Click the box to shake it.">Prendile, lanciale. Clicca il riquadro per scuoterlo.</span></div>
     <div class="sk-grid">
       <div class="sk-list">
         <div class="sk-row rv">
@@ -521,6 +575,7 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
 
 <!-- ═════════ SEEKING ═════════ -->
 <section class="on-ink pad" id="cerco">
+  <canvas id="cv-aurora" aria-hidden="true"></canvas>
   <div class="wrap">
     <p class="eyebrow mono rv" data-en="What I'm looking for">Cosa cerco</p>
     <h2 class="h2 rv" data-en="Real projects, <em>real stakes.</em>">Progetti reali, <em>responsabilità vere.</em></h2>
@@ -690,6 +745,8 @@ function pushCandle(v) {
 hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; });
 hero.addEventListener('pointerleave', () => { mouse.x = mouse.y = -999; });
 
+const ripples = [];
+hero.addEventListener('pointerdown', e => { const r = hero.getBoundingClientRect(); ripples.push({ x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now() / 1000 }); if (ripples.length > 5) ripples.shift(); });
 function drawCode(t) {
   const { c, w, h, s } = gc;
   c.clearRect(0, 0, w, h);
@@ -699,6 +756,7 @@ function drawCode(t) {
     const dx = k.x - mouse.x, dy = k.y - mouse.y, dist = Math.sqrt(dx * dx + dy * dy);
     const near = Math.max(0, 1 - dist / 190);
     let a = Math.pow(wave, 3) * .5 + near * .85;
+    for (const rp of ripples) { const age = t - rp.t; if (age > 1.8) continue; const d2 = Math.hypot(k.x - rp.x, k.y - rp.y); a += Math.max(0, 1 - Math.abs(d2 - age * 620) / 60) * (1 - age / 1.8) * 1.4; }
     if (a < .05) continue;
     if (Math.random() < .004 + near * .05) k.g = GL[(Math.random() * GL.length) | 0];
     c.fillStyle = near > .45 ? C.salmon : C.peri;
@@ -780,7 +838,19 @@ const lines = () => T(
 let li = 0;
 function say(i) { bubble.classList.add('pop'); setTimeout(() => { bubble.textContent = lines()[i]; bubble.classList.remove('pop'); }, 220); }
 function poke() { li = (li + 1) % lines().length; say(li); stage.classList.remove('wave'); void stage.offsetWidth; stage.classList.add('wave'); }
-stage.addEventListener('click', poke);
+const botw = $('#botw'); let bx = 0, by = 0, bvx = 0, bvy = 0, bd = null, botLive = false;
+function botLoop() {
+  if (!bd) { bvx = (bvx - bx * .09) * .84; bvy = (bvy - by * .09) * .84; bx += bvx; by += bvy; }
+  botw.setAttribute('transform', `translate(${bx.toFixed(1)} ${by.toFixed(1)}) rotate(${(bx * .07).toFixed(2)} 200 420)`);
+  if (bd || Math.abs(bx) + Math.abs(by) + Math.abs(bvx) + Math.abs(bvy) > .05) requestAnimationFrame(botLoop); else { botLive = false; botw.removeAttribute('transform'); bx = by = 0; }
+}
+stage.addEventListener('pointerdown', e => { bd = { x: e.clientX, y: e.clientY, ox: bx, oy: by, m: 0, k: 400 / (stage.getBoundingClientRect().width * .84) }; try { stage.setPointerCapture(e.pointerId); } catch (_) {} });
+stage.addEventListener('pointermove', e => {
+  if (!bd) return; const dx = e.clientX - bd.x, dy = e.clientY - bd.y; bd.m = Math.max(bd.m, Math.hypot(dx, dy));
+  if (bd.m > 6) { bx = bd.ox + dx * bd.k; by = bd.oy + dy * bd.k; if (!botLive) { botLive = true; botLoop(); } }
+});
+stage.addEventListener('pointerup', () => { if (bd && bd.m <= 6) poke(); bd = null; });
+stage.addEventListener('pointercancel', () => { bd = null; });
 stage.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); poke(); } });
 langHooks.push(() => { bubble.textContent = lines()[li]; });
 addEventListener('pointermove', e => {
@@ -860,6 +930,231 @@ if (fine && !reduce) {
   document.addEventListener('pointerover', e => cur.classList.toggle('big', !!e.target.closest('a,button,[data-hover],.stage,.portrait')));
   (function loop() { cx += (px - cx) * .2; cy += (py - cy) * .2; cur.style.transform = `translate(${cx}px,${cy}px)`; requestAnimationFrame(loop); })();
 }
+
+/* ───── WebGL helper ───── */
+function program(gl, vs, fs) {
+  const mk = (t, src) => { const sh = gl.createShader(t); gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh)); return sh; };
+  const pr = gl.createProgram(); gl.attachShader(pr, mk(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, mk(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
+  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
+  return pr;
+}
+const watch = (el, cb) => { if ('IntersectionObserver' in window) new IntersectionObserver(es => cb(es[0].isIntersecting)).observe(el); else cb(true); };
+
+/* ───── playground: particles that morph between shapes ───── */
+(function forme() {
+  const sec = $('#forme'), cv = $('#cv-forme');
+  let gl; try { gl = cv.getContext('webgl', { antialias: false, alpha: false }); } catch (e) {}
+  if (!gl) { sec.hidden = true; return; }
+  const N = innerWidth < 700 ? 8000 : 18000, CAM = 3.2, F = 2.4;
+  const pos = new Float32Array(N * 3), vel = new Float32Array(N * 3), seed = new Float32Array(N);
+  let tgt = pos;
+  for (let i = 0; i < N; i++) { seed[i] = Math.random(); pos[i * 3] = (Math.random() - .5) * 5; pos[i * 3 + 1] = (Math.random() - .5) * 5; pos[i * 3 + 2] = (Math.random() - .5) * 5; }
+  let pr;
+  try {
+    pr = program(gl, `attribute vec3 p; attribute float s; uniform vec2 rot; uniform float asp, dpr, sc; uniform vec2 off; varying float vs, vz;
+      void main(){ float cy=cos(rot.y), sy=sin(rot.y), cx=cos(rot.x), sx=sin(rot.x);
+        vec3 q=vec3(p.x*cy+p.z*sy, p.y, -p.x*sy+p.z*cy); q=vec3(q.x, q.y*cx-q.z*sx, q.y*sx+q.z*cx);
+        float w=${CAM.toFixed(1)}-q.z; vec2 xy=q.xy*sc*${F.toFixed(1)}/w;
+        gl_Position=vec4(xy.x/asp+off.x, xy.y+off.y, 0., 1.); gl_PointSize=dpr*(1.3+s*2.4)*${CAM.toFixed(1)}/w; vs=s; vz=q.z; }`,
+      `precision mediump float; varying float vs, vz;
+      void main(){ float d=length(gl_PointCoord-.5); if(d>.5) discard; float a=smoothstep(.5,.08,d);
+        vec3 col=mix(vec3(.60,.65,1.), vec3(1.,.82,.73), step(.8,vs)); col=mix(col, vec3(.26,.32,1.), step(vs,.3));
+        gl_FragColor=vec4(col*a*(.5+.32*vz), 1.); }`);
+  } catch (e) { sec.hidden = true; return; }
+  gl.useProgram(pr);
+  const U = n => gl.getUniformLocation(pr, n);
+  const bufP = gl.createBuffer(), bufS = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufS); gl.bufferData(gl.ARRAY_BUFFER, seed, gl.STATIC_DRAW);
+  const aS = gl.getAttribLocation(pr, 's'); gl.enableVertexAttribArray(aS); gl.vertexAttribPointer(aS, 1, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufP); gl.bufferData(gl.ARRAY_BUFFER, pos, gl.DYNAMIC_DRAW);
+  const aP = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(aP); gl.vertexAttribPointer(aP, 3, gl.FLOAT, false, 0, 0);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE); gl.clearColor(10 / 255, 13 / 255, 36 / 255, 1);
+
+  /* shapes: drawn on a small 2D canvas, then sampled into a slab of points */
+  const S = 240;
+  function sample(draw, depth) {
+    const c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d', { willReadFrequently: true });
+    x.fillStyle = x.strokeStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.lineCap = x.lineJoin = 'round';
+    draw(x); const d = x.getImageData(0, 0, S, S).data, pts = [];
+    for (let i = 0; i < S * S; i++) if (d[i * 4 + 3] > 120) pts.push(i);
+    const out = new Float32Array(N * 3); if (!pts.length) return out;
+    for (let i = 0; i < N; i++) { const q = pts[(Math.random() * pts.length) | 0];
+      out[i * 3] = ((q % S) + Math.random()) / S * 2 - 1; out[i * 3 + 1] = -(((q / S) | 0) + Math.random()) / S * 2 + 1; out[i * 3 + 2] = (Math.random() - .5) * depth; }
+    return out;
+  }
+  const rr = (x, a, b, w, h, r) => { x.beginPath(); if (x.roundRect) x.roundRect(a * S, b * S, w * S, h * S, r * S); else x.rect(a * S, b * S, w * S, h * S); x.fill(); };
+  const disc = (x, a, b, r) => { x.beginPath(); x.arc(a * S, b * S, r * S, 0, 6.3); x.fill(); };
+  const defs = [
+    { id: 'idea', it: 'Idea', en: 'Idea', cit: "Ogni progetto parte da qui: un'idea.", cen: 'Every project starts here: an idea.',
+      make: () => { const o = new Float32Array(N * 3); for (let i = 0; i < N; i++) { const y = 1 - 2 * (i + .5) / N, r = Math.sqrt(1 - y * y), a = i * 2.39996, k = .78 + (Math.random() < .12 ? Math.random() * .22 : 0);
+        o[i * 3] = Math.cos(a) * r * k; o[i * 3 + 1] = y * k; o[i * 3 + 2] = Math.sin(a) * r * k; } return o; } },
+    { id: 'code', it: 'Codice', en: 'Code', cit: 'Python, Java, JavaScript, C: la base tecnica.', cen: 'Python, Java, JavaScript, C: the technical base.',
+      make: () => sample(x => { x.font = `700 ${S * .4}px "Martian Mono",monospace`; x.fillText('</>', S / 2, S / 2); }, .3) },
+    { id: 'biz', it: 'Impresa', en: 'Business', cit: 'Economia e Gestione Aziendale, Università Cattolica.', cen: 'Economics & Business Management, Università Cattolica.',
+      make: () => sample(x => { [.2, .3, .27, .44, .6].forEach((h, i) => rr(x, .1 + i * .17, .92 - h, .12, h, .02));
+        x.lineWidth = S * .035; x.beginPath(); [[.1, .52], [.3, .4], [.44, .47], [.86, .1]].forEach(([a, b], i) => i ? x.lineTo(a * S, b * S) : x.moveTo(a * S, b * S)); x.stroke();
+        x.beginPath(); x.moveTo(.92 * S, .05 * S); x.lineTo(.74 * S, .09 * S); x.lineTo(.88 * S, .23 * S); x.fill(); }, .3) },
+    { id: 'robot', it: 'Robot', en: 'Robot', cit: 'NAO Challenge: amministratore delegato del team.', cen: 'NAO Challenge: CEO of the team.',
+      make: () => sample(x => { rr(x, .2, .17, .6, .42, .15); x.globalCompositeOperation = 'destination-out'; disc(x, .37, .38, .085); disc(x, .63, .38, .085);
+        x.globalCompositeOperation = 'source-over'; disc(x, .37, .38, .035); disc(x, .63, .38, .035); disc(x, .5, .055, .04);
+        x.fillRect(.485 * S, .08 * S, .03 * S, .1 * S); x.fillRect(.45 * S, .59 * S, .1 * S, .07 * S); rr(x, .3, .65, .4, .3, .09); rr(x, .16, .66, .1, .25, .05); rr(x, .74, .66, .1, .25, .05); }, .34) },
+    { id: 'grade', it: 'Diploma', en: 'Diploma', cit: 'Diploma tecnico in Informatica: 94/100.', cen: 'Technical diploma in Computer Science: 94/100.',
+      make: () => sample(x => { x.font = `700 ${S * .7}px "Hanken Grotesk",Arial,sans-serif`; x.fillText('94', S / 2, S * .52); }, .3) },
+    { id: 'ef', it: 'E/F', en: 'E/F', cit: 'Edoardo Fenini. Metà codice, metà impresa.', cen: 'Edoardo Fenini. Half code, half business.',
+      make: () => sample(x => { x.font = `italic 700 ${S * .66}px "Bodoni Moda","Times New Roman",serif`; x.fillText('EF', S / 2, S * .52); }, .3) }
+  ];
+  let cur = 0, auto = !reduce, autoT = 0;
+  const btns = $('#forme-btns'), cap = $('#forme-cap');
+  function show(i) { cur = i; const d = defs[i]; if (!d.pts) d.pts = d.make(); tgt = d.pts; cap.textContent = T(d.cit, d.cen);
+    $$('button', btns).forEach((b, j) => b.setAttribute('aria-pressed', j === i)); }
+  langHooks.push(() => {
+    btns.innerHTML = defs.map(d => `<button type="button">${T(d.it, d.en)}</button>`).join('');
+    $('#forme-how').textContent = fine ? T('Muovi il mouse per spostare le particelle · trascina per ruotare · clicca per farle esplodere', 'Move the mouse to push the particles · drag to rotate · click to explode')
+      : T('Tocca per far esplodere le particelle · trascina di lato per ruotare', 'Tap to explode the particles · drag sideways to rotate');
+    show(cur);
+  });
+  btns.addEventListener('click', e => { const i = $$('button', btns).indexOf(e.target.closest('button')); if (i >= 0) { auto = false; show(i); } });
+
+  /* pointer: repel, rotate, explode */
+  let offX = 0, offY = 0, W = 1, H = 1, asp = 1, sc = 1, dpr = 1, mx = 9, my = 9, ux = 0, uy = 0, uvx = 0, uvy = 0, drag = null, on = false;
+  function size() { dpr = Math.min(2, devicePixelRatio || 1); const r = cv.getBoundingClientRect(); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; gl.viewport(0, 0, cv.width, cv.height); asp = W / H; sc = asp < 1 ? asp * .98 : 1; offX = asp > 1.25 ? .24 : 0; offY = asp > 1.25 ? -.04 : .04; }
+  const ndc = e => { const r = cv.getBoundingClientRect(); mx = (e.clientX - r.left) / r.width * 2 - 1; my = -((e.clientY - r.top) / r.height * 2 - 1); };
+  cv.addEventListener('pointerdown', e => { ndc(e); drag = { x: e.clientX, y: e.clientY, m: 0 }; try { cv.setPointerCapture(e.pointerId); } catch (_) {} });
+  cv.addEventListener('pointermove', e => { ndc(e); if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.m += Math.abs(dx) + Math.abs(dy); drag.x = e.clientX; drag.y = e.clientY; uvy = dx * .006; uvx = dy * .006; uy += uvy; ux += uvx; });
+  const up = e => { if (drag && drag.m < 8) boom(); drag = null; if (e.pointerType !== 'mouse') mx = my = 9; };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', () => { drag = null; mx = my = 9; }); cv.addEventListener('pointerleave', () => { if (!drag) mx = my = 9; });
+  function boom() { auto = false; for (let i = 0; i < N * 3; i++) vel[i] += (Math.random() - .5) * (.1 + Math.random() * .22); }
+
+  function tick(now) {
+    requestAnimationFrame(tick); if (!on) return;
+    const t = now / 1000;
+    if (auto && t - autoT > 4.5) { autoT = t; show((cur + 1) % defs.length); }
+    if (!drag) { ux += uvx; uy += uvy; uvx *= .94; uvy *= .94; ux *= .985; uy *= .985; }
+    ux = Math.max(-1.2, Math.min(1.2, ux));
+    const ry = uy + (reduce ? 0 : Math.sin(t * .45) * .5), rx = ux + (reduce ? 0 : Math.sin(t * .3) * .12);
+    const cy = Math.cos(ry), sy = Math.sin(ry), cx = Math.cos(rx), sx = Math.sin(rx);
+    // pointer ray in model space (inverse of the shader's rotation)
+    const inv = (x, y, z) => { const y2 = y * cx + z * sx, z2 = -y * sx + z * cx; return [x * cy - z2 * sy, y2, x * sy + z2 * cy]; };
+    const k = CAM / (sc * F), o = inv((mx - offX) * asp * k, (my - offY) * k, 0), d = inv(0, 0, 1), R2 = .2;
+    for (let i = 0, j = 0; i < N; i++, j += 3) {
+      const sp = .012 + seed[i] * .03;
+      let vx = (vel[j] + (tgt[j] - pos[j]) * sp) * .88, vy = (vel[j + 1] + (tgt[j + 1] - pos[j + 1]) * sp) * .88, vz = (vel[j + 2] + (tgt[j + 2] - pos[j + 2]) * sp) * .88;
+      const wx = pos[j] - o[0], wy = pos[j + 1] - o[1], wz = pos[j + 2] - o[2], dt = wx * d[0] + wy * d[1] + wz * d[2];
+      const px = wx - d[0] * dt, py = wy - d[1] * dt, pz = wz - d[2] * dt, r2 = px * px + py * py + pz * pz;
+      if (r2 < R2) { const f = (1 - r2 / R2) * .03 / Math.sqrt(r2 + .0004); vx += px * f; vy += py * f; vz += pz * f; }
+      vel[j] = vx; vel[j + 1] = vy; vel[j + 2] = vz; pos[j] += vx; pos[j + 1] += vy; pos[j + 2] += vz;
+    }
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, pos);
+    gl.uniform2f(U('rot'), rx, ry); gl.uniform1f(U('asp'), asp); gl.uniform1f(U('dpr'), dpr); gl.uniform1f(U('sc'), sc * .92); gl.uniform2f(U('off'), offX, offY);
+    gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.POINTS, 0, N);
+  }
+  size(); addEventListener('resize', size);
+  watch(sec, v => { on = v; if (v) autoT = performance.now() / 1000; });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { defs.forEach(d => d.pts = null); show(cur); });
+  requestAnimationFrame(tick);
+})();
+
+/* ───── ball pit: throwable skills ───── */
+(function pit() {
+  const box = $('#pit'); if (!box) return;
+  const small = innerWidth < 700, k = small ? .72 : 1;
+  const labels = ['Python', 'Java', 'JavaScript', 'C', 'HTML', 'CSS', 'SQL', 'MongoDB', 'NoSQL', 'NAO', 'Team', 'C1', '94/100'];
+  let W = 0, H = 0, on = false, grab = null, last = 0;
+  const balls = labels.map((l, i) => {
+    const el = document.createElement('div'), big = l.length <= 2;
+    el.className = `ball b${i % 3}${big ? ' big' : ''}`; el.textContent = l;
+    const r = Math.round((big ? 34 : 26 + l.length * 3.6) * k); el.style.width = el.style.height = r * 2 + 'px';
+    if (small) el.style.fontSize = big ? '1.2rem' : '.6rem';
+    box.appendChild(el);
+    return { el, r, x: 0, y: 0, vx: 0, vy: 0, i };
+  });
+  function size() { W = box.clientWidth; H = box.clientHeight; }
+  function drop() { balls.forEach((b, i) => { b.x = b.r + Math.random() * Math.max(1, W - b.r * 2); b.y = -b.r - i * 70 - Math.random() * 60; b.vx = (Math.random() - .5) * 200; b.vy = 0; }); }
+  balls.forEach(b => {
+    b.el.addEventListener('pointerdown', e => { e.stopPropagation(); const r = box.getBoundingClientRect(); grab = { b, dx: e.clientX - r.left - b.x, dy: e.clientY - r.top - b.y, px: b.x, py: b.y }; try { b.el.setPointerCapture(e.pointerId); } catch (_) {} });
+    b.el.addEventListener('pointermove', e => { if (!grab || grab.b !== b) return; const r = box.getBoundingClientRect(); grab.tx = e.clientX - r.left - grab.dx; grab.ty = e.clientY - r.top - grab.dy; });
+    const rel = () => { if (grab && grab.b === b) grab = null; };
+    b.el.addEventListener('pointerup', rel); b.el.addEventListener('pointercancel', rel);
+  });
+  box.addEventListener('pointerdown', () => balls.forEach(b => { b.vy -= 500 + Math.random() * 700; b.vx += (Math.random() - .5) * 900; }));
+  function step(dt) {
+    for (const b of balls) {
+      if (grab && grab.b === b) { if (grab.tx != null) { const nx = Math.max(b.r, Math.min(W - b.r, grab.tx)), ny = Math.min(H - b.r, grab.ty); b.vx = (nx - b.x) / dt * .5 + b.vx * .5; b.vy = (ny - b.y) / dt * .5 + b.vy * .5; b.x = nx; b.y = ny; } continue; }
+      b.vy += 1700 * dt; b.vx *= .995; b.x += b.vx * dt; b.y += b.vy * dt;
+      if (b.x < b.r) { b.x = b.r; b.vx = Math.abs(b.vx) * .6; } else if (b.x > W - b.r) { b.x = W - b.r; b.vx = -Math.abs(b.vx) * .6; }
+      if (b.y > H - b.r) { b.y = H - b.r; b.vy = -Math.abs(b.vy) * .5; b.vx *= .97; if (Math.abs(b.vy) < 40) b.vy = 0; }
+    }
+    for (let i = 0; i < balls.length; i++) for (let j = i + 1; j < balls.length; j++) {
+      const a = balls[i], b = balls[j], dx = b.x - a.x, dy = b.y - a.y, min = a.r + b.r, d2 = dx * dx + dy * dy;
+      if (d2 >= min * min || d2 === 0) continue;
+      const d = Math.sqrt(d2), nx = dx / d, ny = dy / d, ga = grab && grab.b === a, gb = grab && grab.b === b;
+      const ma = ga ? 1e9 : a.r * a.r, mb = gb ? 1e9 : b.r * b.r, tot = ma + mb, ov = min - d;
+      a.x -= nx * ov * mb / tot; a.y -= ny * ov * mb / tot; b.x += nx * ov * ma / tot; b.y += ny * ov * ma / tot;
+      const rv = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny; if (rv > 0) continue;
+      const imp = -(1.55) * rv / (1 / ma + 1 / mb);
+      if (!ga) { a.vx -= imp / ma * nx; a.vy -= imp / ma * ny; } if (!gb) { b.vx += imp / mb * nx; b.vy += imp / mb * ny; }
+    }
+  }
+  function loop(now) {
+    requestAnimationFrame(loop); if (!on) { last = now; return; }
+    const dt = Math.min(.032, (now - last) / 1000 || .016) / 2; last = now;
+    step(dt); step(dt);
+    for (const b of balls) b.el.style.transform = `translate(${(b.x - b.r).toFixed(1)}px,${(b.y - b.r).toFixed(1)}px) rotate(${(Math.sin(b.x * .02) * 16).toFixed(1)}deg)`;
+  }
+  size(); drop(); let seen = false;
+  addEventListener('resize', () => { size(); });
+  watch(box, v => { on = v; if (v && !seen) { seen = true; size(); drop(); } });
+  requestAnimationFrame(loop);
+})();
+
+/* ───── aurora: a fragment shader behind "what I'm looking for" ───── */
+(function aurora() {
+  const cv = $('#cv-aurora'), sec = $('#cerco'); let gl; try { gl = cv.getContext('webgl', { antialias: false }); } catch (e) {}
+  if (!gl) { cv.hidden = true; return; }
+  let pr; try { pr = program(gl, 'attribute vec2 p; void main(){ gl_Position=vec4(p,0.,1.); }', `precision mediump float; uniform vec2 res, m; uniform float t;
+    float h(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+    float n(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }
+    float fbm(vec2 p){ float a=.5, s=0.; for(int i=0;i<5;i++){ s+=a*n(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return s; }
+    void main(){ vec2 a=vec2(res.x/res.y,1.)*2.; vec2 p=gl_FragCoord.xy/res*a, mm=m*a; float md=length(p-mm);
+      vec2 q=vec2(fbm(p+t*.07), fbm(p+vec2(5.2,1.3)-t*.06)); q+=.4*exp(-md*md*1.6)*(p-mm);
+      float f=fbm(p+2.4*q+t*.03);
+      vec3 ink=vec3(.039,.051,.141), ultra=vec3(.227,.278,1.), peri=vec3(.6,.65,1.);
+      vec3 c=mix(ink, ultra, smoothstep(.42,.9,f)*.7); c=mix(c, peri, smoothstep(.7,1.,f+.3*exp(-md*md*2.))*.45); c+=ultra*.22*exp(-md*md*3.);
+      gl_FragColor=vec4(c,1.); }`); } catch (e) { cv.hidden = true; return; }
+  gl.useProgram(pr); gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const a = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
+  const uR = gl.getUniformLocation(pr, 'res'), uM = gl.getUniformLocation(pr, 'm'), uT = gl.getUniformLocation(pr, 't');
+  let on = false, mx = .7, my = .6, tx = .7, ty = .6, drawn = false;
+  function size() { const r = cv.getBoundingClientRect(), s = .5; cv.width = Math.max(2, r.width * s); cv.height = Math.max(2, r.height * s); gl.viewport(0, 0, cv.width, cv.height); drawn = false; }
+  sec.addEventListener('pointermove', e => { const r = sec.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width; ty = 1 - (e.clientY - r.top) / r.height; });
+  function loop(now) { requestAnimationFrame(loop); if (!on || (reduce && drawn)) return; drawn = true; mx += (tx - mx) * .06; my += (ty - my) * .06;
+    gl.uniform2f(uR, cv.width, cv.height); gl.uniform2f(uM, mx, my); gl.uniform1f(uT, now / 1000); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+  size(); addEventListener('resize', size); watch(sec, v => { on = v; if (v) size(); }); requestAnimationFrame(loop);
+})();
+
+/* ───── sparks: pointer trail and click bursts ───── */
+if (!reduce) (function sparks() {
+  const cv = $('#fx'), c = cv.getContext('2d'); let W, H, d, parts = [], live = false, lx = 0, ly = 0;
+  function size() { d = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * d; cv.height = H * d; c.setTransform(d, 0, 0, d, 0, 0); }
+  function add(x, y, n, sp) { for (let i = 0; i < n && parts.length < 400; i++) { const a = Math.random() * 6.283, v = sp * (.3 + Math.random()); parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, l: 1, k: .018 + Math.random() * .03, s: 2 + Math.random() * 5, r: Math.random() * 6.3, plus: Math.random() < .35 }); } if (!live) { live = true; requestAnimationFrame(loop); } }
+  function loop() {
+    c.clearRect(0, 0, W, H); c.fillStyle = c.strokeStyle = '#fff'; c.lineWidth = 1.5;
+    parts = parts.filter(p => (p.l -= p.k) > 0);
+    for (const p of parts) { p.vy += .06; p.vx *= .97; p.vy *= .97; p.x += p.vx; p.y += p.vy; p.r += .08; const s = p.s * p.l;
+      c.save(); c.translate(p.x, p.y); c.rotate(p.r); c.globalAlpha = Math.min(1, p.l * 1.4);
+      if (p.plus) { c.beginPath(); c.moveTo(-s, 0); c.lineTo(s, 0); c.moveTo(0, -s); c.lineTo(0, s); c.stroke(); } else c.fillRect(-s / 2, -s / 2, s, s);
+      c.restore(); }
+    if (parts.length) requestAnimationFrame(loop); else { live = false; c.clearRect(0, 0, W, H); }
+  }
+  size(); addEventListener('resize', size);
+  if (fine) addEventListener('pointermove', e => { if (Math.hypot(e.clientX - lx, e.clientY - ly) > 22) { lx = e.clientX; ly = e.clientY; add(lx, ly, 1, 1.2); } }, { passive: true });
+  addEventListener('pointerdown', e => add(e.clientX, e.clientY, 26, 7), { passive: true });
+})();
+
+/* ───── portrait tilt ───── */
+if (fine && !reduce) { const ph = $('.portrait');
+  ph.addEventListener('pointermove', e => { const r = ph.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; ph.style.transform = `perspective(700px) rotateY(${(x * 26).toFixed(1)}deg) rotateX(${(-y * 26).toFixed(1)}deg) scale(1.04)`; });
+  ph.addEventListener('pointerleave', () => ph.style.transform = ''); }
 
 /* ───── boot ───── */
 let saved = null; try { saved = localStorage.getItem('ef-lang'); } catch (e) {}
