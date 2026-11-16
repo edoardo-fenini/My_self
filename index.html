@@ -288,6 +288,42 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
 .forme-btns button[aria-pressed="true"]{background:var(--fog);color:var(--ink);border-color:var(--fog)}
 .forme-how{margin-top:14px;color:var(--fog-dim)}
 
+/* ───────── particle theme ───────── */
+.hero.pt .world--code .name,.hero.pt .world--code .name i{color:transparent;text-shadow:none}
+.portrait.pt .ph{background:#060818}
+.portrait.pt img{opacity:0}
+.portrait .ph canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;cursor:crosshair}
+.on-ink .h2 em,.forme-ui .h2 em{text-shadow:0 0 42px rgba(154,165,255,.5)}
+.hud{position:fixed;z-index:80;left:5px;top:50%;writing-mode:vertical-rl;transform:translateY(-50%) rotate(180deg);color:#fff;mix-blend-mode:difference;pointer-events:none;font-size:.6rem;display:none;white-space:pre}
+@media (hover:hover) and (pointer:fine) and (min-width:900px){.hud{display:block}}
+
+/* ───────── projects ───────── */
+.proj-grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(28px,5vw,70px);align-items:center;margin-top:clamp(40px,6vw,80px)}
+.proj-list{display:grid;border-top:1px solid var(--line-ink)}
+.proj{position:relative;display:grid;gap:12px;padding:24px 16px 24px 0;border-bottom:1px solid var(--line-ink);cursor:pointer;transition:padding .45s var(--ease),background .45s}
+.proj[aria-pressed="true"]{padding-left:20px;background:linear-gradient(90deg,rgba(58,71,255,.32),transparent 85%)}
+.proj::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--peri);box-shadow:0 0 18px var(--peri);transform:scaleY(0);transition:transform .45s var(--ease)}
+.proj[aria-pressed="true"]::before{transform:scaleY(1)}
+.proj-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;color:var(--peri)}
+.proj h3{font-family:var(--f-display);font-weight:500;font-size:clamp(1.7rem,3.2vw,2.7rem);line-height:1;letter-spacing:-.02em}
+.proj[aria-pressed="true"] h3{font-style:italic}
+.proj p{color:var(--fog-dim);max-width:54ch;font-size:.98rem}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px}
+.proj-tags .chip{color:var(--peri);font-size:.62rem;padding:4px 9px}
+.proj a{justify-self:start;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--salmon);text-underline-offset:4px}
+.proj a:hover{color:#fff}
+.proj-stage{position:relative;aspect-ratio:1;width:100%;max-width:540px;justify-self:center;background:#060818;
+  --b:linear-gradient(var(--peri),var(--peri));background-image:var(--b),var(--b),var(--b),var(--b),var(--b),var(--b),var(--b),var(--b);background-repeat:no-repeat;
+  background-size:22px 1px,1px 22px,22px 1px,1px 22px,22px 1px,1px 22px,22px 1px,1px 22px;
+  background-position:0 0,0 0,100% 0,100% 0,0 100%,0 100%,100% 100%,100% 100%}
+.proj-stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;cursor:crosshair}
+.proj-read{position:absolute;left:14px;top:12px;color:var(--peri);pointer-events:none}
+.proj-status{position:absolute;left:14px;right:14px;bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--salmon);pointer-events:none}
+.proj-status button{pointer-events:auto;padding:7px 12px;border:1px solid var(--salmon);border-radius:99px;font-family:var(--f-mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;transition:background .3s,color .3s}
+.proj-status button:hover{background:var(--salmon);color:var(--ink)}
+.proj-note{margin-top:18px;color:var(--fog-dim)}
+@media (max-width:860px){.proj-grid{grid-template-columns:minmax(0,1fr)}.proj-stage{order:-1}}
+
 /* ───────── ball pit ───────── */
 .pit{position:relative;height:clamp(300px,40vw,430px);margin-top:clamp(36px,5vw,64px);border:1px solid var(--line-salmon);border-radius:22px;overflow:hidden;background:var(--paper);cursor:pointer;user-select:none;-webkit-user-select:none}
 .pit-hint{position:absolute;left:18px;top:14px;color:var(--ultra);pointer-events:none}
@@ -325,6 +361,7 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
 <div class="progress" id="progress"></div>
 <div class="cur" id="cur" aria-hidden="true"></div>
 <canvas id="fx" aria-hidden="true"></canvas>
+<div class="hud mono" id="hud" aria-hidden="true"></div>
 
 <header class="nav">
   <a class="logo" href="#top" aria-label="Edoardo Fenini">E<span>/F</span></a>
@@ -332,6 +369,7 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
     <a href="#chi" data-en="About">Chi sono</a>
     <a href="#percorso" data-en="Journey">Percorso</a>
     <a href="#nao" data-en="NAO Challenge">NAO Challenge</a>
+    <a href="#progetti" data-en="Projects">Progetti</a>
     <a href="#competenze" data-en="Skills">Competenze</a>
     <a href="#contatti" data-en="Contact">Contatti</a>
     <div class="lang" role="group" aria-label="Lingua / Language">
@@ -520,6 +558,47 @@ a.c-val:hover{color:var(--ultra);font-style:italic}
   </div>
 </section>
 
+<div class="band" aria-hidden="true"><div id="band2"></div></div>
+
+<!-- ═════════ PROJECTS ═════════ -->
+<section class="on-ink pad" id="progetti">
+  <div class="wrap">
+    <p class="eyebrow mono rv" data-en="Projects · from my GitHub">Progetti · dal mio GitHub</p>
+    <h2 class="h2 rv" data-en="Written by hand, <em>line by line.</em>">Scritti a mano, <em>riga per riga.</em></h2>
+    <div class="proj-grid">
+      <div class="proj-list" id="proj-list">
+        <div class="proj rv" role="button" tabindex="0" aria-pressed="true" data-p="db">
+          <div class="proj-top mono"><span>01 · 2026</span><span>Python · PHP · MySQL</span></div>
+          <h3>Gestionale informatica</h3>
+          <p data-en="A desktop management app for customers, agents, job roles and orders. A Python interface built with Tkinter talks to REST APIs written in PHP, on top of a MySQL database. It ships with a user manual and a technical manual.">Un gestionale desktop per clienti, agenti, impieghi e ordini. Un'interfaccia Python in Tkinter dialoga con API REST scritte in PHP, sopra un database MySQL. Completo di manuale utente e manuale tecnico.</p>
+          <div class="proj-tags"><span class="chip">Python</span><span class="chip">Tkinter</span><span class="chip">PHP</span><span class="chip">MySQL</span><span class="chip">REST API</span></div>
+          <a href="https://github.com/edoardo-fenini/Gestionale_informatica" target="_blank" rel="noopener" data-en="Code on GitHub ↗">Codice su GitHub ↗</a>
+        </div>
+        <div class="proj rv" role="button" tabindex="0" aria-pressed="false" data-p="ttt">
+          <div class="proj-top mono"><span>02 · 2024</span><span>JavaScript</span></div>
+          <h3>TicTacToe</h3>
+          <p data-en="Two-player tic-tac-toe in plain JavaScript: win and draw detection, with scores saved in the browser. Here it is rebuilt in particles: select it and play against the site.">Tris a due giocatori in JavaScript puro: controllo di vittoria e pareggio, punteggi salvati nel browser. Qui è ricostruito in particelle: selezionalo e gioca contro il sito.</p>
+          <div class="proj-tags"><span class="chip">JavaScript</span><span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">localStorage</span></div>
+          <a href="https://github.com/edoardo-fenini/TicTacToe" target="_blank" rel="noopener" data-en="Code on GitHub ↗">Codice su GitHub ↗</a>
+        </div>
+        <div class="proj rv" role="button" tabindex="0" aria-pressed="false" data-p="moto">
+          <div class="proj-top mono"><span>03 · 2025</span><span>HTML · CSS · JS</span></div>
+          <h3>NEO-moto</h3>
+          <p data-en="The front end of a motorcycle e-commerce: a catalogue loaded from JSON, product page, cart, sign-up, login and checkout.">Il front-end di un e-commerce di moto: catalogo caricato da JSON, pagina prodotto, carrello, registrazione, accesso e pagamento.</p>
+          <div class="proj-tags"><span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span><span class="chip">JSON</span></div>
+          <a href="https://github.com/edoardo-fenini/NEO-moto" target="_blank" rel="noopener" data-en="Code on GitHub ↗">Codice su GitHub ↗</a>
+        </div>
+      </div>
+      <div class="proj-stage rv" id="proj-stage">
+        <canvas id="cv-proj" aria-hidden="true"></canvas>
+        <span class="proj-read mono" id="proj-read"></span>
+        <div class="proj-status mono"><span id="proj-msg" aria-live="polite"></span><button type="button" id="proj-reset" hidden></button></div>
+      </div>
+    </div>
+    <p class="proj-note mono rv" data-en="School projects, written without AI.">Progetti scolastici, scritti senza AI.</p>
+  </div>
+</section>
+
 <!-- ═════════ SKILLS ═════════ -->
 <section class="on-salmon pad" id="competenze">
   <div class="wrap">
@@ -661,6 +740,8 @@ langHooks.push(() => {
     ['Code','python','Business','sql','Robotics','java','Management','c','People','mongodb','Numbers','html']);
   const b = words.map((w, i) => i % 2 ? `<i>${w}</i>` : w).join('');
   $('#band').innerHTML = b + b;
+  const w2 = ['Gestionale', 'python', 'TicTacToe', 'javascript', 'NEO-moto', 'html', 'Tkinter', 'php', 'REST', 'mysql', 'GitHub', 'json'];
+  const b2 = w2.map((w, i) => i % 2 ? `<i>${w}</i>` : w).join(''); $('#band2').innerHTML = b2 + b2;
 });
 
 /* ───── manifesto: words lit by scroll ───── */
@@ -808,6 +889,7 @@ const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.
   if (!e.isIntersecting) return;
   e.target.classList.add('in'); io.unobserve(e.target);
   $$('[data-count]', e.target).forEach(count);
+  if (e.target.classList.contains('eyebrow')) scramble(e.target);
   if (e.target.id === 'term') bootTerm();
 }), { threshold: .15, rootMargin: '0px 0px -6% 0px' }) : null;
 $$('.rv').forEach(el => io ? io.observe(el) : el.classList.add('in'));
@@ -864,8 +946,8 @@ addEventListener('pointermove', e => {
 const out = $('#term-out'), tin = $('#term-input');
 const cmds = {
   help: () => T(
-    'Comandi disponibili:\n  <span class="c">whoami</span>     chi sono\n  <span class="c">skills</span>     competenze tecniche\n  <span class="c">studi</span>      istruzione\n  <span class="c">nao</span>        la NAO Challenge\n  <span class="c">lingue</span>     lingue parlate\n  <span class="c">contatti</span>   come trovarmi\n  <span class="c">clear</span>      pulisci lo schermo',
-    'Available commands:\n  <span class="c">whoami</span>     who I am\n  <span class="c">skills</span>     technical skills\n  <span class="c">studies</span>    education\n  <span class="c">nao</span>        the NAO Challenge\n  <span class="c">languages</span>  spoken languages\n  <span class="c">contact</span>    how to reach me\n  <span class="c">clear</span>      clear the screen'),
+    'Comandi disponibili:\n  <span class="c">whoami</span>     chi sono\n  <span class="c">skills</span>     competenze tecniche\n  <span class="c">studi</span>      istruzione\n  <span class="c">progetti</span>   i miei progetti su GitHub\n  <span class="c">nao</span>        la NAO Challenge\n  <span class="c">lingue</span>     lingue parlate\n  <span class="c">contatti</span>   come trovarmi\n  <span class="c">clear</span>      pulisci lo schermo',
+    'Available commands:\n  <span class="c">whoami</span>     who I am\n  <span class="c">skills</span>     technical skills\n  <span class="c">studies</span>    education\n  <span class="c">projects</span>   my projects on GitHub\n  <span class="c">nao</span>        the NAO Challenge\n  <span class="c">languages</span>  spoken languages\n  <span class="c">contact</span>    how to reach me\n  <span class="c">clear</span>      clear the screen'),
   whoami: () => T(
     'Edoardo Fenini, Milano, classe 2007.\nStudente di Economia e Gestione Aziendale alla Cattolica,\ndiplomato in Informatica. <span class="s">Metà codice, metà impresa.</span>',
     'Edoardo Fenini, Milan, born 2007.\nEconomics & Business Management student at Università Cattolica,\nwith a technical diploma in Computer Science. <span class="s">Half code, half business.</span>'),
@@ -883,9 +965,12 @@ const cmds = {
     'Italian  <span class="s">native</span>\nEnglish  <span class="s">C1</span>  Cambridge C1 Advanced (CAE), Grade B'),
   contatti: () => 'email     <span class="s">edoardofenini@hotmail.com</span>\nlinkedin  <span class="s">linkedin.com/in/edoardo-fenini-a5031a338</span>',
   sudo: () => T('<span class="s">Permesso accordato.</span> Scrivimi: edoardofenini@hotmail.com', '<span class="s">Permission granted.</span> Write to me: edoardofenini@hotmail.com'),
+  progetti: () => T(
+    '<span class="s">Gestionale informatica</span>  Python + Tkinter, API REST in PHP, MySQL   <span class="d">[2026]</span>\n<span class="s">NEO-moto</span>                front-end e-commerce: HTML, CSS, JS, JSON   <span class="d">[2025]</span>\n<span class="s">TicTacToe</span>               tris in JavaScript puro                     <span class="d">[2024]</span>\ngithub.com/edoardo-fenini',
+    '<span class="s">Gestionale informatica</span>  Python + Tkinter, PHP REST APIs, MySQL      <span class="d">[2026]</span>\n<span class="s">NEO-moto</span>                e-commerce front end: HTML, CSS, JS, JSON   <span class="d">[2025]</span>\n<span class="s">TicTacToe</span>               tic-tac-toe in plain JavaScript             <span class="d">[2024]</span>\ngithub.com/edoardo-fenini'),
   ciao: () => T('Ciao! Scrivi <span class="c">help</span> per vedere cosa posso dirti.', 'Hi! Type <span class="c">help</span> to see what I can tell you.')
 };
-const alias = { studies: 'studi', education: 'studi', languages: 'lingue', contact: 'contatti', contacts: 'contatti', hello: 'ciao', hi: 'ciao', about: 'whoami', ls: 'help', '?': 'help' };
+const alias = { projects: 'progetti', github: 'progetti', studies: 'studi', education: 'studi', languages: 'lingue', contact: 'contatti', contacts: 'contatti', hello: 'ciao', hi: 'ciao', about: 'whoami', ls: 'help', '?': 'help' };
 const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 function print(html) { const d = document.createElement('div'); d.innerHTML = html; out.appendChild(d); out.scrollTop = out.scrollHeight; }
 function run(raw) {
@@ -898,7 +983,7 @@ function run(raw) {
 }
 $('#term-form').addEventListener('submit', e => { e.preventDefault(); run(tin.value); tin.value = ''; });
 langHooks.push(() => {
-  $('#term-cmds').innerHTML = T(['whoami','skills','studi','nao','lingue','contatti','sudo assumi edoardo'], ['whoami','skills','studies','nao','languages','contact','sudo hire edoardo'])
+  $('#term-cmds').innerHTML = T(['whoami','skills','progetti','studi','nao','lingue','contatti','sudo assumi edoardo'], ['whoami','skills','projects','studies','nao','languages','contact','sudo hire edoardo'])
     .map(c => `<button type="button">${c}</button>`).join('');
 });
 $('#term-cmds').addEventListener('click', e => { if (e.target.tagName === 'BUTTON') run(e.target.textContent); });
@@ -940,72 +1025,168 @@ function program(gl, vs, fs) {
 }
 const watch = (el, cb) => { if ('IntersectionObserver' in window) new IntersectionObserver(es => cb(es[0].isIntersecting)).observe(el); else cb(true); };
 
+/* ───── particle engine (shared by hero name, portrait, playground, projects) ───── */
+const CAM = 3.2, FOC = 2.4, small = innerWidth < 700;
+const P_VS = `attribute vec3 p; attribute float s, b; uniform vec2 rot, off; uniform float asp, dpr, sc, psz, persp, mono; varying float vs, vz, vb, vm;
+  void main(){ float cy=cos(rot.y), sy=sin(rot.y), cx=cos(rot.x), sx=sin(rot.x);
+    vec3 q=vec3(p.x*cy+p.z*sy, p.y, -p.x*sy+p.z*cy); q=vec3(q.x, q.y*cx-q.z*sx, q.y*sx+q.z*cx);
+    float w=mix(1., (3.2-q.z)/2.4, persp); vec2 xy=q.xy*sc/w;
+    gl_Position=vec4(xy.x/asp+off.x, xy.y+off.y, 0., 1.); gl_PointSize=dpr*psz*mix(.55+s, 1., mono)/mix(1., w*.75, persp); vs=s; vz=q.z*persp; vb=b; vm=mono; }`;
+const P_FS = `precision mediump float; varying float vs, vz, vb, vm; uniform float gain;
+  void main(){ float d=length(gl_PointCoord-.5); if(d>.5) discard; float a=smoothstep(.5,.08,d);
+    vec3 col=mix(vec3(.60,.65,1.), vec3(1.,.82,.73), step(.8,vs)); col=mix(col, vec3(.26,.32,1.), step(vs,.3)); col=mix(col, vec3(.74,.78,1.), vm*.85);
+    col*=a*(.5+.32*vz)*vb*gain; gl_FragColor=vec4(col, max(col.r, max(col.g, col.b))); }`;
+function PSys(cv, N, o) {
+  o = Object.assign({ persp: 1, scale: 1, psz: 2.4, gain: 1, R2: .2, force: .03, sway: [.12, .5], rotate: false, offset: null, own: true, alpha: false, spread: 5 }, o);
+  let gl; try { gl = cv.getContext('webgl', { antialias: false, alpha: o.alpha }); } catch (e) {}
+  if (!gl) return null;
+  let pr; try { pr = program(gl, P_VS, P_FS); } catch (e) { return null; }
+  gl.useProgram(pr);
+  const pos = new Float32Array(N * 3), vel = new Float32Array(N * 3), seed = new Float32Array(N), bri = new Float32Array(N).fill(1);
+  for (let i = 0; i < N; i++) { seed[i] = Math.random(); for (let k = 0; k < 3; k++) pos[i * 3 + k] = (Math.random() - .5) * o.spread * (k === 2 && !o.persp ? 0 : 1); }
+  const U = {}; ['rot', 'off', 'asp', 'dpr', 'sc', 'psz', 'persp', 'gain', 'mono'].forEach(n => U[n] = gl.getUniformLocation(pr, n));
+  const attr = (name, data, size, usage) => { const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, data, usage); const l = gl.getAttribLocation(pr, name); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, size, gl.FLOAT, false, 0, 0); return buf; };
+  attr('s', seed, 1, gl.STATIC_DRAW); const bufB = attr('b', bri, 1, gl.DYNAMIC_DRAW), bufP = attr('p', pos, 3, gl.DYNAMIC_DRAW);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+  if (o.alpha) gl.clearColor(0, 0, 0, 0); else gl.clearColor(6 / 255, 8 / 255, 24 / 255, 1);
+  const S = { N, pos, vel, tgt: pos, mx: 9, my: 9, ux: 0, uy: 0, rx: 0, ry: 0, asp: 1, onTap: null, sway: o.sway };
+  let sc = 1, dpr = 1, offX = 0, offY = 0, uvx = 0, uvy = 0, drag = null;
+  S.size = () => { dpr = Math.min(2, devicePixelRatio || 1); const r = cv.getBoundingClientRect(); if (!r.width) return; cv.width = r.width * dpr; cv.height = r.height * dpr; gl.viewport(0, 0, cv.width, cv.height);
+    S.asp = r.width / r.height; sc = o.persp ? (S.asp < 1 ? S.asp * .98 : 1) * o.scale : 1; const f = o.offset ? o.offset(S.asp) : [0, 0]; offX = f[0]; offY = f[1]; };
+  S.point = (x, y) => { const r = cv.getBoundingClientRect(); S.mx = (x - r.left) / r.width * 2 - 1; S.my = -((y - r.top) / r.height * 2 - 1); };
+  S.away = () => { S.mx = S.my = 9; };
+  S.target = t => { S.tgt = t; };
+  S.bright = a => { bri.set(a); gl.bindBuffer(gl.ARRAY_BUFFER, bufB); gl.bufferData(gl.ARRAY_BUFFER, bri, gl.DYNAMIC_DRAW); };
+  S.boom = (k = 1) => { for (let i = 0; i < N * 3; i++) vel[i] += (Math.random() - .5) * (.1 + Math.random() * .22) * k; };
+  const ray = () => { const cy = Math.cos(S.ry), sy = Math.sin(S.ry), cx = Math.cos(S.rx), sx = Math.sin(S.rx);
+    const inv = (x, y, z) => { const y2 = y * cx + z * sx, z2 = -y * sx + z * cx; return [x * cy - z2 * sy, y2, x * sy + z2 * cy]; };
+    const k = (o.persp ? CAM / FOC : 1) / sc; return [inv((S.mx - offX) * S.asp * k, (S.my - offY) * k, 0), inv(0, 0, 1)]; };
+  S.hit = () => { const [a, d] = ray(), t = Math.abs(d[2]) > 1e-4 ? -a[2] / d[2] : 0; return [a[0] + d[0] * t, a[1] + d[1] * t]; };
+  if (o.own) {
+    cv.addEventListener('pointerdown', e => { S.point(e.clientX, e.clientY); drag = { x: e.clientX, y: e.clientY, m: 0 }; try { cv.setPointerCapture(e.pointerId); } catch (_) {} });
+    cv.addEventListener('pointermove', e => { S.point(e.clientX, e.clientY); if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.m += Math.abs(dx) + Math.abs(dy); drag.x = e.clientX; drag.y = e.clientY;
+      if (o.rotate) { uvy = dx * .006; uvx = dy * .006; S.uy += uvy; S.ux += uvx; } });
+    cv.addEventListener('pointerup', e => { if (drag && drag.m < 8) { if (S.onTap) S.onTap(S.hit()); else S.boom(); } drag = null; if (e.pointerType !== 'mouse') S.away(); });
+    cv.addEventListener('pointercancel', () => { drag = null; S.away(); }); cv.addEventListener('pointerleave', () => { if (!drag) S.away(); });
+  }
+  S.frame = t => {
+    if (!drag) { S.ux += uvx; S.uy += uvy; uvx *= .94; uvy *= .94; S.ux *= .985; S.uy *= .985; }
+    S.ux = Math.max(-1.2, Math.min(1.2, S.ux));
+    const mv = o.persp && !reduce ? 1 : 0;
+    S.rx = S.ux + Math.sin(t * .3) * S.sway[0] * mv; S.ry = S.uy + Math.sin(t * .45) * S.sway[1] * mv;
+    const [a, d] = ray(), R2 = o.R2, F = o.force, tg = S.tgt;
+    for (let i = 0, j = 0; i < N; i++, j += 3) {
+      const sp = .012 + seed[i] * .03;
+      let vx = (vel[j] + (tg[j] - pos[j]) * sp) * .88, vy = (vel[j + 1] + (tg[j + 1] - pos[j + 1]) * sp) * .88, vz = (vel[j + 2] + (tg[j + 2] - pos[j + 2]) * sp) * .88;
+      const wx = pos[j] - a[0], wy = pos[j + 1] - a[1], wz = pos[j + 2] - a[2], dt = wx * d[0] + wy * d[1] + wz * d[2];
+      const px = wx - d[0] * dt, py = wy - d[1] * dt, pz = wz - d[2] * dt, r2 = px * px + py * py + pz * pz;
+      if (r2 < R2) { const f = (1 - r2 / R2) * F / Math.sqrt(r2 + .0004); vx += px * f; vy += py * f; vz += pz * f; }
+      vel[j] = vx; vel[j + 1] = vy; vel[j + 2] = vz; pos[j] += vx; pos[j + 1] += vy; pos[j + 2] += vz;
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufP); gl.bufferSubData(gl.ARRAY_BUFFER, 0, pos);
+    gl.uniform2f(U.rot, S.rx, S.ry); gl.uniform2f(U.off, offX, offY); gl.uniform1f(U.asp, S.asp); gl.uniform1f(U.dpr, dpr); gl.uniform1f(U.sc, sc);
+    gl.uniform1f(U.psz, o.psz); gl.uniform1f(U.persp, o.persp); gl.uniform1f(U.gain, o.gain); gl.uniform1f(U.mono, o.mono ? 1 : 0);
+    gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.POINTS, 0, N);
+  };
+  S.size(); addEventListener('resize', () => S.size());
+  return S;
+}
+/* run fn(t) every frame while el is on screen */
+function run(el, fn, onShow) { let on = false; watch(el, v => { on = v; if (v && onShow) onShow(); }); (function loop(now) { requestAnimationFrame(loop); if (on) fn(now / 1000); })(0); }
+/* shapes: drawn on a small 2D canvas, then sampled into a slab of N points */
+const SH = 240;
+function sampleShape(N, draw, depth) {
+  const c = document.createElement('canvas'); c.width = c.height = SH; const x = c.getContext('2d', { willReadFrequently: true });
+  x.fillStyle = x.strokeStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.lineCap = x.lineJoin = 'round';
+  draw(x); const d = x.getImageData(0, 0, SH, SH).data, pts = [];
+  for (let i = 0; i < SH * SH; i++) if (d[i * 4 + 3] > 120) pts.push(i);
+  const out = new Float32Array(N * 3); if (!pts.length) return out;
+  for (let i = 0; i < N; i++) { const q = pts[(Math.random() * pts.length) | 0];
+    out[i * 3] = ((q % SH) + Math.random()) / SH * 2 - 1; out[i * 3 + 1] = -(((q / SH) | 0) + Math.random()) / SH * 2 + 1; out[i * 3 + 2] = (Math.random() - .5) * depth; }
+  return out;
+}
+const S_ = SH;
+const rr = (x, a, b, w, h, r) => { x.beginPath(); if (x.roundRect) x.roundRect(a * S_, b * S_, w * S_, h * S_, r * S_); else x.rect(a * S_, b * S_, w * S_, h * S_); x.fill(); };
+const disc = (x, a, b, r) => { x.beginPath(); x.arc(a * S_, b * S_, r * S_, 0, 6.3); x.fill(); };
+const seg = (x, pts, lw) => { x.lineWidth = lw * S_; x.beginPath(); pts.forEach(([a, b], i) => i ? x.lineTo(a * S_, b * S_) : x.moveTo(a * S_, b * S_)); x.stroke(); };
+const ring = (x, a, b, r, lw) => { x.lineWidth = lw * S_; x.beginPath(); x.arc(a * S_, b * S_, r * S_, 0, 6.3); x.stroke(); };
+
+/* ───── hero: the code-side name is made of particles ───── */
+(function heroName() {
+  const world = $('.world--code'), cv = document.createElement('canvas'); $('#cv-code').after(cv);
+  const N = small ? 10000 : 30000, ps = PSys(cv, N, { persp: 0, alpha: true, psz: small ? 1.8 : 2.2, gain: 1.5, R2: .03, force: .016, own: false, spread: 3 });
+  if (!ps) { cv.remove(); return; }
+  hero.classList.add('pt');
+  function build() {
+    ps.size(); const hr = hero.getBoundingClientRect(), q = .5, w = Math.max(2, Math.round(hr.width * q)), h = Math.max(2, Math.round(hr.height * q));
+    const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d', { willReadFrequently: true });
+    x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    $$('.name span', world).forEach(sp => { const r = sp.getBoundingClientRect(), fs = parseFloat(getComputedStyle(sp).fontSize) * q;
+      x.font = `600 ${fs}px "Martian Mono",monospace`; try { x.letterSpacing = (-fs * .06) + 'px'; } catch (_) {}
+      x.fillText(sp.textContent.toUpperCase(), (r.left - hr.left + r.width / 2) * q, (r.top - hr.top + r.height / 2) * q); });
+    const d = x.getImageData(0, 0, w, h).data, pts = []; for (let i = 0; i < w * h; i++) if (d[i * 4 + 3] > 120) pts.push(i);
+    if (!pts.length) return; const out = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) { const k = pts[(Math.random() * pts.length) | 0]; out[i * 3] = (((k % w) + Math.random()) / w * 2 - 1) * ps.asp; out[i * 3 + 1] = -(((k / w) | 0) + Math.random()) / h * 2 + 1; }
+    ps.target(out);
+  }
+  hero.addEventListener('pointermove', e => ps.point(e.clientX, e.clientY));
+  hero.addEventListener('pointerleave', () => ps.away());
+  hero.addEventListener('pointerdown', e => { ps.point(e.clientX, e.clientY); ps.boom(.35); });
+  hero.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') ps.away(); });
+  build(); let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(build, 200); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(build);
+  run(hero, t => ps.frame(t));
+})();
+
+/* ───── portrait: the photo as a relief of particles ───── */
+(function portrait() {
+  const fig = $('.portrait'), ph = $('.ph', fig), img = $('img', fig), cv = document.createElement('canvas');
+  const G = small ? 112 : 170, N = G * G; ph.appendChild(cv);
+  const ps = PSys(cv, N, { scale: CAM / FOC, psz: small ? 2.2 : 2.3, gain: 1.5, mono: true, R2: .07, force: .028, sway: [.1, .26], spread: 4 });
+  if (!ps) { cv.remove(); return; }
+  function build() {
+    const c = document.createElement('canvas'); c.width = c.height = G; const x = c.getContext('2d', { willReadFrequently: true }); let d;
+    try { x.drawImage(img, 0, 0, G, G); d = x.getImageData(0, 0, G, G).data; } catch (e) { cv.remove(); return; }
+    const out = new Float32Array(N * 3), br = new Float32Array(N);
+    for (let i = 0; i < N; i++) { const gx = i % G, gy = (i / G) | 0, u = (gx + .5) / G * 2 - 1, v = (gy + .5) / G * 2 - 1;
+      let l = (d[i * 4] * .3 + d[i * 4 + 1] * .59 + d[i * 4 + 2] * .11) / 255; /* the face is darker than the wall behind it: lift the shadows and spotlight the centre */
+      l = Math.pow(Math.min(1, l / .5), .6) * (.3 + .7 * Math.exp(-(u * u * 3 + (v + .25) * (v + .25) * 2)));
+      out[i * 3] = u * .99; out[i * 3 + 1] = -v * .99; out[i * 3 + 2] = (l - .4) * .34; br[i] = .07 + l * 2.3; }
+    ps.target(out); ps.bright(br); fig.classList.add('pt');
+  }
+  if (img.complete && img.naturalWidth) build(); else img.addEventListener('load', build);
+  run(fig, t => ps.frame(t), () => ps.size());
+})();
+
 /* ───── playground: particles that morph between shapes ───── */
 (function forme() {
   const sec = $('#forme'), cv = $('#cv-forme');
-  let gl; try { gl = cv.getContext('webgl', { antialias: false, alpha: false }); } catch (e) {}
-  if (!gl) { sec.hidden = true; return; }
-  const N = innerWidth < 700 ? 8000 : 18000, CAM = 3.2, F = 2.4;
-  const pos = new Float32Array(N * 3), vel = new Float32Array(N * 3), seed = new Float32Array(N);
-  let tgt = pos;
-  for (let i = 0; i < N; i++) { seed[i] = Math.random(); pos[i * 3] = (Math.random() - .5) * 5; pos[i * 3 + 1] = (Math.random() - .5) * 5; pos[i * 3 + 2] = (Math.random() - .5) * 5; }
-  let pr;
-  try {
-    pr = program(gl, `attribute vec3 p; attribute float s; uniform vec2 rot; uniform float asp, dpr, sc; uniform vec2 off; varying float vs, vz;
-      void main(){ float cy=cos(rot.y), sy=sin(rot.y), cx=cos(rot.x), sx=sin(rot.x);
-        vec3 q=vec3(p.x*cy+p.z*sy, p.y, -p.x*sy+p.z*cy); q=vec3(q.x, q.y*cx-q.z*sx, q.y*sx+q.z*cx);
-        float w=${CAM.toFixed(1)}-q.z; vec2 xy=q.xy*sc*${F.toFixed(1)}/w;
-        gl_Position=vec4(xy.x/asp+off.x, xy.y+off.y, 0., 1.); gl_PointSize=dpr*(1.3+s*2.4)*${CAM.toFixed(1)}/w; vs=s; vz=q.z; }`,
-      `precision mediump float; varying float vs, vz;
-      void main(){ float d=length(gl_PointCoord-.5); if(d>.5) discard; float a=smoothstep(.5,.08,d);
-        vec3 col=mix(vec3(.60,.65,1.), vec3(1.,.82,.73), step(.8,vs)); col=mix(col, vec3(.26,.32,1.), step(vs,.3));
-        gl_FragColor=vec4(col*a*(.5+.32*vz), 1.); }`);
-  } catch (e) { sec.hidden = true; return; }
-  gl.useProgram(pr);
-  const U = n => gl.getUniformLocation(pr, n);
-  const bufP = gl.createBuffer(), bufS = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufS); gl.bufferData(gl.ARRAY_BUFFER, seed, gl.STATIC_DRAW);
-  const aS = gl.getAttribLocation(pr, 's'); gl.enableVertexAttribArray(aS); gl.vertexAttribPointer(aS, 1, gl.FLOAT, false, 0, 0);
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufP); gl.bufferData(gl.ARRAY_BUFFER, pos, gl.DYNAMIC_DRAW);
-  const aP = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(aP); gl.vertexAttribPointer(aP, 3, gl.FLOAT, false, 0, 0);
-  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE); gl.clearColor(10 / 255, 13 / 255, 36 / 255, 1);
-
-  /* shapes: drawn on a small 2D canvas, then sampled into a slab of points */
-  const S = 240;
-  function sample(draw, depth) {
-    const c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d', { willReadFrequently: true });
-    x.fillStyle = x.strokeStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.lineCap = x.lineJoin = 'round';
-    draw(x); const d = x.getImageData(0, 0, S, S).data, pts = [];
-    for (let i = 0; i < S * S; i++) if (d[i * 4 + 3] > 120) pts.push(i);
-    const out = new Float32Array(N * 3); if (!pts.length) return out;
-    for (let i = 0; i < N; i++) { const q = pts[(Math.random() * pts.length) | 0];
-      out[i * 3] = ((q % S) + Math.random()) / S * 2 - 1; out[i * 3 + 1] = -(((q / S) | 0) + Math.random()) / S * 2 + 1; out[i * 3 + 2] = (Math.random() - .5) * depth; }
-    return out;
-  }
-  const rr = (x, a, b, w, h, r) => { x.beginPath(); if (x.roundRect) x.roundRect(a * S, b * S, w * S, h * S, r * S); else x.rect(a * S, b * S, w * S, h * S); x.fill(); };
-  const disc = (x, a, b, r) => { x.beginPath(); x.arc(a * S, b * S, r * S, 0, 6.3); x.fill(); };
+  const N = small ? 15000 : 46000;
+  const ps = PSys(cv, N, { rotate: true, scale: .92, psz: small ? 2 : 1.9, gain: small ? .9 : .62, offset: a => a > 1.25 ? [.24, -.04] : [0, .04] });
+  if (!ps) { sec.hidden = true; return; }
+  const S = SH;
   const defs = [
-    { id: 'idea', it: 'Idea', en: 'Idea', cit: "Ogni progetto parte da qui: un'idea.", cen: 'Every project starts here: an idea.',
+    { it: 'Idea', en: 'Idea', cit: "Ogni progetto parte da qui: un'idea.", cen: 'Every project starts here: an idea.',
       make: () => { const o = new Float32Array(N * 3); for (let i = 0; i < N; i++) { const y = 1 - 2 * (i + .5) / N, r = Math.sqrt(1 - y * y), a = i * 2.39996, k = .78 + (Math.random() < .12 ? Math.random() * .22 : 0);
         o[i * 3] = Math.cos(a) * r * k; o[i * 3 + 1] = y * k; o[i * 3 + 2] = Math.sin(a) * r * k; } return o; } },
-    { id: 'code', it: 'Codice', en: 'Code', cit: 'Python, Java, JavaScript, C: la base tecnica.', cen: 'Python, Java, JavaScript, C: the technical base.',
-      make: () => sample(x => { x.font = `700 ${S * .4}px "Martian Mono",monospace`; x.fillText('</>', S / 2, S / 2); }, .3) },
-    { id: 'biz', it: 'Impresa', en: 'Business', cit: 'Economia e Gestione Aziendale, Università Cattolica.', cen: 'Economics & Business Management, Università Cattolica.',
-      make: () => sample(x => { [.2, .3, .27, .44, .6].forEach((h, i) => rr(x, .1 + i * .17, .92 - h, .12, h, .02));
-        x.lineWidth = S * .035; x.beginPath(); [[.1, .52], [.3, .4], [.44, .47], [.86, .1]].forEach(([a, b], i) => i ? x.lineTo(a * S, b * S) : x.moveTo(a * S, b * S)); x.stroke();
+    { it: 'Codice', en: 'Code', cit: 'Python, Java, JavaScript, C: la base tecnica.', cen: 'Python, Java, JavaScript, C: the technical base.',
+      make: () => sampleShape(N, x => { x.font = `700 ${S * .4}px "Martian Mono",monospace`; x.fillText('</>', S / 2, S / 2); }, .3) },
+    { it: 'Impresa', en: 'Business', cit: 'Economia e Gestione Aziendale, Università Cattolica.', cen: 'Economics & Business Management, Università Cattolica.',
+      make: () => sampleShape(N, x => { [.2, .3, .27, .44, .6].forEach((h, i) => rr(x, .1 + i * .17, .92 - h, .12, h, .02));
+        seg(x, [[.1, .52], [.3, .4], [.44, .47], [.86, .1]], .035);
         x.beginPath(); x.moveTo(.92 * S, .05 * S); x.lineTo(.74 * S, .09 * S); x.lineTo(.88 * S, .23 * S); x.fill(); }, .3) },
-    { id: 'robot', it: 'Robot', en: 'Robot', cit: 'NAO Challenge: amministratore delegato del team.', cen: 'NAO Challenge: CEO of the team.',
-      make: () => sample(x => { rr(x, .2, .17, .6, .42, .15); x.globalCompositeOperation = 'destination-out'; disc(x, .37, .38, .085); disc(x, .63, .38, .085);
+    { it: 'Robot', en: 'Robot', cit: 'NAO Challenge: amministratore delegato del team.', cen: 'NAO Challenge: CEO of the team.',
+      make: () => sampleShape(N, x => { rr(x, .2, .17, .6, .42, .15); x.globalCompositeOperation = 'destination-out'; disc(x, .37, .38, .085); disc(x, .63, .38, .085);
         x.globalCompositeOperation = 'source-over'; disc(x, .37, .38, .035); disc(x, .63, .38, .035); disc(x, .5, .055, .04);
         x.fillRect(.485 * S, .08 * S, .03 * S, .1 * S); x.fillRect(.45 * S, .59 * S, .1 * S, .07 * S); rr(x, .3, .65, .4, .3, .09); rr(x, .16, .66, .1, .25, .05); rr(x, .74, .66, .1, .25, .05); }, .34) },
-    { id: 'grade', it: 'Diploma', en: 'Diploma', cit: 'Diploma tecnico in Informatica: 94/100.', cen: 'Technical diploma in Computer Science: 94/100.',
-      make: () => sample(x => { x.font = `700 ${S * .7}px "Hanken Grotesk",Arial,sans-serif`; x.fillText('94', S / 2, S * .52); }, .3) },
-    { id: 'ef', it: 'E/F', en: 'E/F', cit: 'Edoardo Fenini. Metà codice, metà impresa.', cen: 'Edoardo Fenini. Half code, half business.',
-      make: () => sample(x => { x.font = `italic 700 ${S * .66}px "Bodoni Moda","Times New Roman",serif`; x.fillText('EF', S / 2, S * .52); }, .3) }
+    { it: 'Diploma', en: 'Diploma', cit: 'Diploma tecnico in Informatica: 94/100.', cen: 'Technical diploma in Computer Science: 94/100.',
+      make: () => sampleShape(N, x => { x.font = `700 ${S * .7}px "Hanken Grotesk",Arial,sans-serif`; x.fillText('94', S / 2, S * .52); }, .3) },
+    { it: 'E/F', en: 'E/F', cit: 'Edoardo Fenini. Metà codice, metà impresa.', cen: 'Edoardo Fenini. Half code, half business.',
+      make: () => sampleShape(N, x => { x.font = `italic 700 ${S * .66}px "Bodoni Moda","Times New Roman",serif`; x.fillText('EF', S / 2, S * .52); }, .3) }
   ];
   let cur = 0, auto = !reduce, autoT = 0;
   const btns = $('#forme-btns'), cap = $('#forme-cap');
-  function show(i) { cur = i; const d = defs[i]; if (!d.pts) d.pts = d.make(); tgt = d.pts; cap.textContent = T(d.cit, d.cen);
+  function show(i) { cur = i; const d = defs[i]; if (!d.pts) d.pts = d.make(); ps.target(d.pts); cap.textContent = T(d.cit, d.cen);
     $$('button', btns).forEach((b, j) => b.setAttribute('aria-pressed', j === i)); }
   langHooks.push(() => {
     btns.innerHTML = defs.map(d => `<button type="button">${T(d.it, d.en)}</button>`).join('');
@@ -1014,51 +1195,87 @@ const watch = (el, cb) => { if ('IntersectionObserver' in window) new Intersecti
     show(cur);
   });
   btns.addEventListener('click', e => { const i = $$('button', btns).indexOf(e.target.closest('button')); if (i >= 0) { auto = false; show(i); } });
-
-  /* pointer: repel, rotate, explode */
-  let offX = 0, offY = 0, W = 1, H = 1, asp = 1, sc = 1, dpr = 1, mx = 9, my = 9, ux = 0, uy = 0, uvx = 0, uvy = 0, drag = null, on = false;
-  function size() { dpr = Math.min(2, devicePixelRatio || 1); const r = cv.getBoundingClientRect(); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; gl.viewport(0, 0, cv.width, cv.height); asp = W / H; sc = asp < 1 ? asp * .98 : 1; offX = asp > 1.25 ? .24 : 0; offY = asp > 1.25 ? -.04 : .04; }
-  const ndc = e => { const r = cv.getBoundingClientRect(); mx = (e.clientX - r.left) / r.width * 2 - 1; my = -((e.clientY - r.top) / r.height * 2 - 1); };
-  cv.addEventListener('pointerdown', e => { ndc(e); drag = { x: e.clientX, y: e.clientY, m: 0 }; try { cv.setPointerCapture(e.pointerId); } catch (_) {} });
-  cv.addEventListener('pointermove', e => { ndc(e); if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.m += Math.abs(dx) + Math.abs(dy); drag.x = e.clientX; drag.y = e.clientY; uvy = dx * .006; uvx = dy * .006; uy += uvy; ux += uvx; });
-  const up = e => { if (drag && drag.m < 8) boom(); drag = null; if (e.pointerType !== 'mouse') mx = my = 9; };
-  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', () => { drag = null; mx = my = 9; }); cv.addEventListener('pointerleave', () => { if (!drag) mx = my = 9; });
-  function boom() { auto = false; for (let i = 0; i < N * 3; i++) vel[i] += (Math.random() - .5) * (.1 + Math.random() * .22); }
-
-  function tick(now) {
-    requestAnimationFrame(tick); if (!on) return;
-    const t = now / 1000;
-    if (auto && t - autoT > 4.5) { autoT = t; show((cur + 1) % defs.length); }
-    if (!drag) { ux += uvx; uy += uvy; uvx *= .94; uvy *= .94; ux *= .985; uy *= .985; }
-    ux = Math.max(-1.2, Math.min(1.2, ux));
-    const ry = uy + (reduce ? 0 : Math.sin(t * .45) * .5), rx = ux + (reduce ? 0 : Math.sin(t * .3) * .12);
-    const cy = Math.cos(ry), sy = Math.sin(ry), cx = Math.cos(rx), sx = Math.sin(rx);
-    // pointer ray in model space (inverse of the shader's rotation)
-    const inv = (x, y, z) => { const y2 = y * cx + z * sx, z2 = -y * sx + z * cx; return [x * cy - z2 * sy, y2, x * sy + z2 * cy]; };
-    const k = CAM / (sc * F), o = inv((mx - offX) * asp * k, (my - offY) * k, 0), d = inv(0, 0, 1), R2 = .2;
-    for (let i = 0, j = 0; i < N; i++, j += 3) {
-      const sp = .012 + seed[i] * .03;
-      let vx = (vel[j] + (tgt[j] - pos[j]) * sp) * .88, vy = (vel[j + 1] + (tgt[j + 1] - pos[j + 1]) * sp) * .88, vz = (vel[j + 2] + (tgt[j + 2] - pos[j + 2]) * sp) * .88;
-      const wx = pos[j] - o[0], wy = pos[j + 1] - o[1], wz = pos[j + 2] - o[2], dt = wx * d[0] + wy * d[1] + wz * d[2];
-      const px = wx - d[0] * dt, py = wy - d[1] * dt, pz = wz - d[2] * dt, r2 = px * px + py * py + pz * pz;
-      if (r2 < R2) { const f = (1 - r2 / R2) * .03 / Math.sqrt(r2 + .0004); vx += px * f; vy += py * f; vz += pz * f; }
-      vel[j] = vx; vel[j + 1] = vy; vel[j + 2] = vz; pos[j] += vx; pos[j + 1] += vy; pos[j + 2] += vz;
-    }
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, pos);
-    gl.uniform2f(U('rot'), rx, ry); gl.uniform1f(U('asp'), asp); gl.uniform1f(U('dpr'), dpr); gl.uniform1f(U('sc'), sc * .92); gl.uniform2f(U('off'), offX, offY);
-    gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.POINTS, 0, N);
-  }
-  size(); addEventListener('resize', size);
-  watch(sec, v => { on = v; if (v) autoT = performance.now() / 1000; });
+  ps.onTap = () => { auto = false; ps.boom(); };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { defs.forEach(d => d.pts = null); show(cur); });
-  requestAnimationFrame(tick);
+  run(sec, t => { if (auto && t - autoT > 4.5) { autoT = t; show((cur + 1) % defs.length); } ps.frame(t); }, () => { autoT = performance.now() / 1000; ps.size(); });
 })();
+
+/* ───── projects: particle emblems, and a playable tic-tac-toe ───── */
+(function projects() {
+  const list = $('#proj-list'), stage = $('#proj-stage'), cv = $('#cv-proj'), msg = $('#proj-msg'), reset = $('#proj-reset'), read = $('#proj-read');
+  const N = small ? 11000 : 30000, S = SH;
+  const ps = PSys(cv, N, { rotate: true, scale: 1.12, psz: small ? 1.9 : 2, gain: .8, R2: .1, force: .024, sway: [.08, .3], spread: 4 });
+  if (!ps) { stage.hidden = true; return; }
+  const LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+  let cur = 'db', board, over, line, busy, result;
+  const winner = b => LINES.find(([a, c, d]) => b[a] && b[a] === b[c] && b[a] === b[d]) || null;
+  const cx = i => .1 + .8 * ((i % 3) + .5) / 3, cy = i => .1 + .8 * (((i / 3) | 0) + .5) / 3;
+  const shapes = {
+    db: () => sampleShape(N, x => { [.17, .42, .67].forEach(y => { x.beginPath(); x.ellipse(.5 * S, (y + .1) * S, .3 * S, .055 * S, 0, 0, 6.3); x.fill(); x.fillRect(.2 * S, y * S, .6 * S, .1 * S);
+        x.beginPath(); x.ellipse(.5 * S, y * S, .3 * S, .055 * S, 0, 0, 6.3); x.fill();
+        x.globalCompositeOperation = 'destination-out'; x.lineWidth = S * .012; x.beginPath(); x.ellipse(.5 * S, y * S, .25 * S, .034 * S, 0, 0, 6.3); x.stroke(); x.globalCompositeOperation = 'source-over'; }); }, .34),
+    moto: () => sampleShape(N, x => { ring(x, .22, .68, .15, .04); ring(x, .78, .68, .15, .04); disc(x, .22, .68, .035); disc(x, .78, .68, .035);
+        seg(x, [[.22, .68], [.4, .5], [.6, .5], [.5, .68], [.22, .68]], .028); seg(x, [[.78, .68], [.66, .34]], .034); seg(x, [[.58, .3], [.72, .3]], .034);
+        x.beginPath(); x.moveTo(.4 * S, .47 * S); x.quadraticCurveTo(.5 * S, .3 * S, .66 * S, .4 * S); x.lineTo(.62 * S, .5 * S); x.lineTo(.4 * S, .5 * S); x.fill();
+        rr(x, .2, .4, .22, .06, .03); rr(x, .42, .52, .16, .13, .03); }, .26),
+    ttt: () => sampleShape(N, x => { [1, 2].forEach(i => { const p = .1 + .8 * i / 3; seg(x, [[p, .1], [p, .9]], .016); seg(x, [[.1, p], [.9, p]], .016); });
+        board.forEach((v, i) => { const a = cx(i), b = cy(i); if (v === 1) { seg(x, [[a - .08, b - .08], [a + .08, b + .08]], .04); seg(x, [[a + .08, b - .08], [a - .08, b + .08]], .04); } else if (v === 2) ring(x, a, b, .085, .04); });
+        if (line) seg(x, [[cx(line[0]), cy(line[0])], [cx(line[2]), cy(line[2])]], .03); }, .12)
+  };
+  const cache = {};
+  function draw() { ps.target(cur === 'ttt' ? shapes.ttt() : (cache[cur] || (cache[cur] = shapes[cur]()))); ps.sway = cur === 'ttt' ? [.04, .12] : [.08, .3]; }
+  function text() {
+    read.textContent = { db: 'gestionale.sql · 4 tables', ttt: 'tictactoe · you: X', moto: 'neo-moto · magazzino.json' }[cur];
+    reset.hidden = cur !== 'ttt'; reset.textContent = T('Nuova partita', 'New game');
+    msg.textContent = cur !== 'ttt' ? T('Trascina per ruotare · clicca per esplodere', 'Drag to rotate · click to explode')
+      : result === 'x' ? T('Hai vinto!', 'You win!') : result === 'o' ? T('Ha vinto il sito.', 'The site wins.') : result === 'd' ? T('Pareggio.', 'Draw.') : T('Tocca a te: scegli una casella', 'Your move: pick a square');
+  }
+  function fresh() { board = Array(9).fill(0); over = busy = false; line = result = null; }
+  function settle() { line = winner(board); if (line) { over = true; result = board[line[0]] === 1 ? 'x' : 'o'; ps.boom(.5); } else if (board.every(v => v)) { over = true; result = 'd'; } draw(); text(); }
+  function reply() {
+    const free = board.map((v, i) => v ? -1 : i).filter(i => i >= 0), tryFor = p => free.find(i => { const b = board.slice(); b[i] = p; return winner(b); });
+    let m = tryFor(2); if (m === undefined) m = tryFor(1); if (m === undefined && !board[4]) m = 4;
+    if (m === undefined) { const c = [0, 2, 6, 8].filter(i => !board[i]); m = c.length ? c[(Math.random() * c.length) | 0] : free[(Math.random() * free.length) | 0]; }
+    board[m] = 2; busy = false; settle();
+  }
+  ps.onTap = ([hx, hy]) => {
+    if (cur !== 'ttt') { ps.boom(); return; }
+    if (over || busy) return; const u = (hx + 1) / 2, v = (1 - hy) / 2; if (u < .1 || u > .9 || v < .1 || v > .9) return;
+    const i = Math.min(2, ((u - .1) / .8 * 3) | 0) + 3 * Math.min(2, ((v - .1) / .8 * 3) | 0); if (board[i]) return;
+    board[i] = 1; settle(); if (!over) { busy = true; setTimeout(reply, 520); }
+  };
+  reset.addEventListener('click', () => { fresh(); ps.boom(.4); draw(); text(); });
+  function pick(id) { if (id === cur) return; cur = id; $$('.proj', list).forEach(el => el.setAttribute('aria-pressed', el.dataset.p === id)); if (id === 'ttt') fresh(); draw(); text(); }
+  $$('.proj', list).forEach(el => {
+    el.addEventListener('click', () => pick(el.dataset.p)); el.addEventListener('focus', () => pick(el.dataset.p));
+    if (fine) el.addEventListener('pointerenter', () => pick(el.dataset.p));
+    el.addEventListener('keydown', e => { if (e.target === el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(el.dataset.p); } });
+  });
+  fresh(); draw(); langHooks.push(text);
+  run(stage, t => ps.frame(t), () => ps.size());
+})();
+
+/* ───── HUD readout and text scramble ───── */
+(function hud() {
+  const el = $('#hud'), ids = ['hero', 'chi', 'forme', 'percorso', 'nao', 'progetti', 'competenze', 'cerco', 'contatti'], secs = ids.map(i => document.getElementById(i));
+  let x = 0, y = 0, k = 0, q = false; const pad = (n, l) => String(Math.round(n)).padStart(l, '0');
+  const paint = () => { q = false; el.textContent = `X ${pad(x, 4)}  Y ${pad(y, 4)}  //  ${pad(k + 1, 2)}/${pad(ids.length, 2)}  ${ids[k].toUpperCase()}`; };
+  const ask = () => { if (!q) { q = true; requestAnimationFrame(paint); } };
+  addEventListener('pointermove', e => { x = e.clientX; y = e.clientY; ask(); }, { passive: true });
+  addEventListener('scroll', () => { k = 0; secs.forEach((s, i) => { if (s && s.getBoundingClientRect().top <= innerHeight * .5) k = i; }); ask(); }, { passive: true });
+  paint();
+})();
+function scramble(el) {
+  if (reduce || el.children.length) return; const txt = el.textContent, ch = '01<>/{}#$%&*+='; let f = 0;
+  (function step() { f++; const n = f / 1.4; let out = ''; for (let i = 0; i < txt.length; i++) out += i < n || txt[i] === ' ' ? txt[i] : ch[(Math.random() * ch.length) | 0];
+    if (n < txt.length) { el.textContent = out; requestAnimationFrame(step); } else el.textContent = txt; })();
+}
 
 /* ───── ball pit: throwable skills ───── */
 (function pit() {
   const box = $('#pit'); if (!box) return;
-  const small = innerWidth < 700, k = small ? .72 : 1;
-  const labels = ['Python', 'Java', 'JavaScript', 'C', 'HTML', 'CSS', 'SQL', 'MongoDB', 'NoSQL', 'NAO', 'Team', 'C1', '94/100'];
+  const k = small ? .72 : 1;
+  const labels = ['Python', 'Java', 'JavaScript', 'C', 'HTML', 'CSS', 'SQL', 'MongoDB', 'NoSQL', 'PHP', 'MySQL', 'NAO', 'Team', 'C1', '94/100'];
   let W = 0, H = 0, on = false, grab = null, last = 0;
   const balls = labels.map((l, i) => {
     const el = document.createElement('div'), big = l.length <= 2;
